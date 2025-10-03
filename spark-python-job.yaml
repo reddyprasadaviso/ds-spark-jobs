@@ -6,7 +6,7 @@ metadata:
 spec:
   type: Python
   mode: cluster
-  image: gcr.io/spark-operator/spark-py:v3.1.1   # Official PySpark image
+  image: gcr.io/spark-operator/spark-py:v3.1.1
   imagePullPolicy: Always
   mainApplicationFile: https://raw.githubusercontent.com/reddyprasadaviso/ds-spark-jobs/dev/pi.py
   sparkVersion: 3.1.1
@@ -17,13 +17,23 @@ spec:
     memory: 512m
     serviceAccount: spark-operator-controller
     securityContext:
+      runAsNonRoot: true
+      allowPrivilegeEscalation: false
       seccompProfile:
         type: RuntimeDefault
+      capabilities:
+        drop:
+          - ALL
   executor:
     cores: 1
     instances: 2
     memory: 512m
     securityContext:
+      runAsNonRoot: true
+      allowPrivilegeEscalation: false
       seccompProfile:
         type: RuntimeDefault
+      capabilities:
+        drop:
+          - ALL
 
