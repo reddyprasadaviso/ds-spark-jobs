@@ -4,7 +4,7 @@ metadata:
   name: spark-pi-github
   namespace: kubeflow
   labels:
-    version: 1.0
+    version: "1.0"
 spec:
   type: Scala
   mode: cluster
@@ -25,12 +25,14 @@ spec:
     memory: "512m"
     serviceAccount: spark
     labels:
-      version: 1.0
+      version: "1.0"
     securityContext:
-      allowPrivilegeEscalation: false
+      runAsNonRoot: true
       runAsUser: 1000
-      runAsGroup: 1000
-      fsGroup: 1000
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
     podSecurityContext:
       seccompProfile:
         type: RuntimeDefault
@@ -42,19 +44,19 @@ spec:
     instances: 2
     memory: "512m"
     labels:
-      version: 1.0
+      version: "1.0"
     securityContext:
-      allowPrivilegeEscalation: false
+      runAsNonRoot: true
       runAsUser: 1000
-      runAsGroup: 1000
-      fsGroup: 1000
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
     podSecurityContext:
       seccompProfile:
         type: RuntimeDefault
   deps:
     jars: []
-  restartPolicy:
-    type: Never
   volumes:
     - name: spark-local-dir
       emptyDir: {}
