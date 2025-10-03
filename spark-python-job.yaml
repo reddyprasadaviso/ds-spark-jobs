@@ -5,10 +5,6 @@ metadata:
   namespace: kubeflow
   labels:
     app: spark
-    team: ml
-  annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "4040"
 spec:
   type: Python
   mode: cluster
@@ -18,18 +14,13 @@ spec:
   sparkVersion: 3.1.1
   restartPolicy:
     type: Never
-  sparkConf:
-    "spark.driver.extraJavaOptions": "-Dlog4j.configuration=file:/opt/spark/conf/log4j.properties"
-    "spark.executor.extraJavaOptions": "-Dlog4j.configuration=file:/opt/spark/conf/log4j.properties"
-    "spark.dynamicAllocation.enabled": "true"
-    "spark.shuffle.service.enabled": "true"
-    "spark.executor.memoryOverhead": "128m"
+  podSecurityContext:
+    seccompProfile:
+      type: RuntimeDefault
   driver:
     cores: 1
     memory: 512m
     serviceAccount: spark-operator-controller
-    labels:
-      version: v1
     securityContext:
       runAsUser: 1000
       runAsNonRoot: true
