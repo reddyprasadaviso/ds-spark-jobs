@@ -12,11 +12,13 @@ spec:
   sparkVersion: 3.1.1
   restartPolicy:
     type: Never
+
   driver:
     cores: 1
     memory: 512m
-    serviceAccount: spark-operator-controller
+    serviceAccount: spark-operator-controller   # ✅ keep for now unless we create `spark` SA
     securityContext:
+      runAsUser: 1000
       runAsNonRoot: true
       allowPrivilegeEscalation: false
       seccompProfile:
@@ -24,11 +26,13 @@ spec:
       capabilities:
         drop:
           - ALL
+
   executor:
     cores: 1
     instances: 2
     memory: 512m
     securityContext:
+      runAsUser: 1000
       runAsNonRoot: true
       allowPrivilegeEscalation: false
       seccompProfile:
