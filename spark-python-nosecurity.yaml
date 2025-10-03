@@ -3,35 +3,59 @@ kind: SparkApplication
 metadata:
   name: spark-pi-github
   namespace: kubeflow
-  annotations:
-    sidecar.istio.io/inject: "false"
 spec:
   type: Python
+  pythonVersion: "3"
   mode: cluster
-  image: gcr.io/spark-operator/spark-py:v3.1.1
-  imagePullPolicy: Always
-  mainApplicationFile: https://raw.githubusercontent.com/reddyprasadaviso/ds-spark-jobs/dev/pi.py
-  sparkVersion: 3.1.1
-  restartPolicy:
-    type: Never
-  deps: {}
+  image: "python:3.9-slim"
+  imagePullPolicy: IfNotPresent
+  mainApplicationFile: "local:///opt/spark/examples/src/main/python/pi.py"
+  sparkVersion: "3.4.1"
+
+  # Spark Driver configuration
   driver:
     cores: 1
-    memory: 512m
-    serviceAccount: spark-operator-controller
+    memory: "512m"
+    serviceAccount: spark
+    labels:
+      version: 3.4.1
     securityContext:
       runAsUser: 1000
+      runAsGroup: 1000
       runAsNonRoot: true
-      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
       seccompProfile:
         type: RuntimeDefault
+    env:
+      - name: PYTHONHASHSEED
+        value: "42"
+
+  # Spark Executor configuration
   executor:
     cores: 1
-    instances: 2
-    memory: 512m
+    instances: 1
+    memory: "512m"
+    labels:
+      version: 3.4.1
     securityContext:
       runAsUser: 1000
+      runAsGroup: 1000
       runAsNonRoot: true
-      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
       seccompProfile:
         type: RuntimeDefault
+
+  # Optional: enable logging to see pod-level logs
+  sparkConf:
+    "spark.kubernetes.driver.log.level": "INFO"
+    "spark.kubernetes.executor.log.level": "INFO"
+
+  # Optional: tolerations / node selectors
+  # tolerations:
+  #   - key: "example-key"
+  #     operator: "Exists"
+  #     effect: "NoSchedule"
