@@ -3,8 +3,8 @@ kind: SparkApplication
 metadata:
   name: spark-pi-github
   namespace: kubeflow
-  labels:
-    app: spark
+  annotations:
+    sidecar.istio.io/inject: "false"   # Prevent Istio sidecar injection
 spec:
   type: Python
   mode: cluster
@@ -14,9 +14,6 @@ spec:
   sparkVersion: 3.1.1
   restartPolicy:
     type: Never
-  podSecurityContext:
-    seccompProfile:
-      type: RuntimeDefault
   driver:
     cores: 1
     memory: 512m
