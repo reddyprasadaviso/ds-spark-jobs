@@ -1,0 +1,85 @@
+apiVersion: sparkoperator.k8s.io/v1beta2
+kind: SparkApplication
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"sparkoperator.k8s.io/v1beta2","kind":"SparkApplication","metadata":{"annotations":{},"labels":{"version":"1.0"},"name":"spark-pi-github","namespace":"kubeflow"},"spec":{"deps":{"jars":[]},"driver":{"cores":2,"env":[{"name":"SPARK_DRIVER_PYTHON","value":"python3"}],"labels":{"version":"1.0"},"memory":"1g","podSecurityContext":{"seccompProfile":{"type":"RuntimeDefault"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"runAsNonRoot":true,"runAsUser":185,"seccompProfile":{"type":"RuntimeDefault"}},"serviceAccount":"spark"},"executor":{"cores":2,"instances":2,"labels":{"version":"1.0"},"memory":"1g","podSecurityContext":{"seccompProfile":{"type":"RuntimeDefault"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"runAsNonRoot":true,"runAsUser":185,"seccompProfile":{"type":"RuntimeDefault"}}},"image":"apache/spark-py:3.5.1","imagePullPolicy":"Always","mainApplicationFile":"local:///opt/spark/examples/src/main/python/pi.py","mode":"cluster","restartPolicy":{"type":"Never"},"sparkConf":{"spark.kubernetes.container.image.pullPolicy":"Always","spark.kubernetes.driver.label.app":"spark-pi","spark.kubernetes.executor.label.app":"spark-pi"},"sparkVersion":"3.4.1","type":"Python","volumes":[{"emptyDir":{},"name":"spark-local-dir"}]}}
+  creationTimestamp: "2025-10-06T05:39:24Z"
+  generation: 1
+  labels:
+    version: "1.0"
+  name: spark-pi-github
+  namespace: kubeflow
+  resourceVersion: "26078902"
+  uid: 3fe3e115-2d34-43b7-9aad-7c86522c4ea1
+spec:
+  deps:
+    jars: []
+  driver:
+    cores: 2
+    env:
+    - name: SPARK_DRIVER_PYTHON
+      value: python3
+    labels:
+      version: "1.0"
+    memory: 1g
+    podSecurityContext:
+      seccompProfile:
+        type: RuntimeDefault
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      runAsNonRoot: true
+      runAsUser: 185
+      seccompProfile:
+        type: RuntimeDefault
+    serviceAccount: spark
+  executor:
+    cores: 2
+    instances: 2
+    labels:
+      version: "1.0"
+    memory: 1g
+    podSecurityContext:
+      seccompProfile:
+        type: RuntimeDefault
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      runAsNonRoot: true
+      runAsUser: 185
+      seccompProfile:
+        type: RuntimeDefault
+  image: apache/spark-py:3.5.1
+  imagePullPolicy: Always
+  mainApplicationFile: local:///opt/spark/examples/src/main/python/pi.py
+  mode: cluster
+  restartPolicy:
+    type: Never
+  sparkConf:
+    spark.kubernetes.container.image.pullPolicy: Always
+    spark.kubernetes.driver.label.app: spark-pi
+    spark.kubernetes.executor.label.app: spark-pi
+  sparkVersion: 3.4.1
+  type: Python
+  volumes:
+  - emptyDir: {}
+    name: spark-local-dir
+status:
+  applicationState:
+    state: SUBMITTED
+  driverInfo:
+    podName: spark-pi-github-driver
+    webUIAddress: 172.20.15.94:4040
+    webUIPort: 4040
+    webUIServiceName: spark-pi-github-ui-svc
+  executionAttempts: 1
+  lastSubmissionAttemptTime: "2025-10-06T05:39:24Z"
+  sparkApplicationId: spark-69e979daf115417683f7a02251520313
+  submissionAttempts: 1
+  submissionID: 248f1ec2-2897-4e81-a611-f60265189f27
+  terminationTime: null

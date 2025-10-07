@@ -1,0 +1,143 @@
+apiVersion: sparkoperator.k8s.io/v1beta2
+kind: SparkApplication
+metadata:
+  name: spark-pi-github
+  namespace: kubeflow
+  labels:
+    version: "1.0"
+spec:
+  type: Python
+  mode: cluster
+  image: apache/spark:3.4.1-python3
+  imagePullPolicy: Always
+  mainApplicationFile: local:///opt/spark/examples/src/main/python/pi.py
+  sparkVersion: "3.4.1"
+
+  restartPolicy:
+    type: Never
+
+  sparkConf:
+    spark.ui.enabled: "true"
+    spark.ui.killOnCompletion: "false"
+    spark.kubernetes.driver.label.app: spark-pi
+    spark.kubernetes.executor.label.app: spark-pi
+    spark.kubernetes.container.image.pullPolicy: Always
+    # Keep driver pod alive after job completion
+    spark.kubernetes.driver.pod.retained: "true"
+
+  driver:
+    cores: 2
+    memory: "1g"
+    serviceAccount: spark
+    terminationGracePeriodSeconds: 600
+    labels:
+      version: "1.0"
+      sidecar.istio.io/inject: "false"
+    securityContext:
+      runAsUser: 185
+      runAsNonRoot: true
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop: ["ALL"]
+      seccompProfile:
+        type: RuntimeDefault
+    podSecurityContext:
+      seccompProfile:
+        type: RuntimeDefault
+    env:
+      - name: SPARK_DRIVER_PYTHON
+        value: python3
+
+  executor:
+    cores: 1
+    instances: 1
+    memory: "512m"
+    labels:
+      version: "1.0"
+      sidecar.istio.io/inject: "false"
+    securityContext:
+      runAsUser: 185
+      runAsNonRoot: true
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop: ["ALL"]
+      seccompProfile:
+        type: RuntimeDefault
+    podSecurityContext:
+      seccompProfile:
+        type: RuntimeDefault
+
+  volumes:
+    - name: spark-local-dir
+      emptyDir: {}
+
+
+
+
+# apiVersion: sparkoperator.k8s.io/v1beta2
+# kind: SparkApplication
+# metadata:
+#   name: spark-pi-github
+#   namespace: kubeflow
+#   labels:
+#     version: "1.0"
+# spec:
+#   type: Python
+#   mode: cluster
+#   image: apache/spark:3.4.1-python3
+#   imagePullPolicy: Always
+#   mainApplicationFile: local:///opt/spark/examples/src/main/python/pi.py
+#   sparkVersion: "3.4.1"
+#   restartPolicy:
+#     type: Never
+#
+#   driver:
+#     cores: 2
+#     memory: "1g"
+#     serviceAccount: spark
+#     labels:
+#       version: "1.0"
+#     securityContext:
+#       runAsUser: 185
+#       runAsNonRoot: true
+#       allowPrivilegeEscalation: false
+#       capabilities:
+#         drop: ["ALL"]
+#       seccompProfile:
+#         type: RuntimeDefault
+#     podSecurityContext:
+#       seccompProfile:
+#         type: RuntimeDefault
+#     env:
+#       - name: SPARK_DRIVER_PYTHON
+#         value: python3
+#
+#   executor:
+#     cores: 1
+#     instances: 1
+#     memory: "512m"
+#     labels:
+#       version: "1.0"
+#     securityContext:
+#       runAsUser: 185
+#       runAsNonRoot: true
+#       allowPrivilegeEscalation: false
+#       capabilities:
+#         drop: ["ALL"]
+#       seccompProfile:
+#         type: RuntimeDefault
+#     podSecurityContext:
+#       seccompProfile:
+#         type: RuntimeDefault
+#
+#   sparkConf:
+#     spark.kubernetes.driver.label.app: spark-pi
+#     spark.kubernetes.executor.label.app: spark-pi
+#     spark.kubernetes.container.image.pullPolicy: Always
+#
+#   deps:
+#     jars: []
+#
+#   volumes:
+#     - name: spark-local-dir
+#       emptyDir: {}

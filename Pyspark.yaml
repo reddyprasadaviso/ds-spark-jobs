@@ -1,0 +1,53 @@
+apiVersion: sparkoperator.k8s.io/v1beta2
+kind: SparkApplication
+metadata:
+  name: spark-python-test
+  namespace: kubeflow
+  annotations:
+    sidecar.istio.io/inject: "false"
+spec:
+  type: Python
+  pythonVersion: "3"
+  mode: cluster
+  image: gcr.io/spark-operator/spark-py:v3.5.1  # known working public image
+  imagePullPolicy: IfNotPresent
+  mainApplicationFile: local:///opt/spark/app/pyspark-job.py
+  sparkVersion: "3.5.1"
+  restartPolicy:
+    type: Never
+  driver:
+    cores: 1
+    memory: 512m
+    serviceAccount: spark
+    securityContext:
+      runAsNonRoot: true
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop: ["ALL"]
+      seccompProfile:
+        type: RuntimeDefault
+    volumeMounts:
+      - name: pyspark-job-volume
+        mountPath: /opt/spark/app
+  executor:
+    cores: 1
+    instances: 2
+    memory: 512m
+    securityContext:
+      runAsNonRoot: true
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop: ["ALL"]
+      seccompProfile:
+        type: RuntimeDefault
+    volumeMounts:
+      - name: pyspark-job-volume
+        mountPath: /opt/spark/app
+  volumes:
+    - name: pyspark-job-volume
+      configMap:
+        name: pyspark-job
+  sparkConf:
+    spark.kubernetes.container.image.pullPolicy: IfNotPresent
+    spark.pyspark.python: /usr/local/bin/python3
+    spark.pyspark.driver.python: /usr/local/bin/python3
